@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="CutLab – Professional Video Editing for YouTubers, Brands & Content Creators. Cinematic storytelling, color grading, reels, shorts, and commercial videos.">
+<meta name="keywords" content="video editing, YouTube editor, reels editor, content creator, freelance video editor, CutLab">
+<meta property="og:title" content="CutLab | Professional Video Editing">
+<meta property="og:description" content="Bringing your story to life through cinematic video editing.">
+<title>CutLab | Professional Video Editing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080808;
+    --bg2: #0e0e0e;
+    --bg3: #141414;
+    --surface: #1a1a1a;
+    --border: #242424;
+    --accent: #e8ff47;
+    --accent2: #ff4757;
+    --text: #f0f0f0;
+    --muted: #666;
+    --muted2: #999;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Outfit', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CURSOR */
+  .cursor { position: fixed; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: transform 0.1s; mix-blend-mode: difference; }
+  .cursor-ring { position: fixed; width: 36px; height: 36px; border: 1px solid rgba(232,255,71,0.5); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: all 0.18s ease; mix-blend-mode: difference; }
+  .cursor-ring.hovering { width: 60px; height: 60px; border-color: var(--accent); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.4rem 5%;
+    transition: background 0.4s, backdrop-filter 0.4s, padding 0.3s;
+  }
+  nav.scrolled { background: rgba(8,8,8,0.9); backdrop-filter: blur(16px); padding: 1rem 5%; border-bottom: 1px solid var(--border); }
+  .nav-logo { font-family: var(--font-display); font-size: 2rem; letter-spacing: 3px; color: var(--text); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { color: var(--muted2); text-decoration: none; font-size: 0.82rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; transition: color 0.25s; }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta { background: var(--accent); color: #000; padding: 0.6rem 1.6rem; font-weight: 700; font-size: 0.8rem; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; transition: all 0.25s; clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%); }
+  .nav-cta:hover { background: #fff; transform: translateY(-1px); }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+  .hamburger span { width: 24px; height: 2px; background: var(--text); transition: all 0.3s; }
+
+  /* SECTIONS */
+  section { padding: 7rem 5%; }
+
+  /* HERO */
+  #home {
+    min-height: 100vh; display: flex; align-items: center;
+    position: relative; overflow: hidden; padding: 0 5%;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse 80% 60% at 60% 50%, rgba(232,255,71,0.04) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 80% 20%, rgba(255,71,87,0.05) 0%, transparent 50%),
+                #080808;
+  }
+  .hero-grid {
+    position: absolute; inset: 0; z-index: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black, transparent);
+  }
+  .hero-noise {
+    position: absolute; inset: 0; z-index: 0; opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding-top: 6rem; }
+  .hero-tag { display: inline-flex; align-items: center; gap: 0.6rem; background: rgba(232,255,71,0.08); border: 1px solid rgba(232,255,71,0.2); padding: 0.4rem 1rem; margin-bottom: 2rem; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); font-family: var(--font-mono); }
+  .hero-tag::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+  .hero-title { font-family: var(--font-display); font-size: clamp(3.5rem, 9vw, 9rem); line-height: 0.9; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2rem; }
+  .hero-title em { font-style: normal; color: var(--accent); display: block; }
+  .hero-title .outline { -webkit-text-stroke: 1.5px rgba(240,240,240,0.3); color: transparent; }
+  .hero-sub { font-size: 1.05rem; color: var(--muted2); max-width: 500px; margin-bottom: 3rem; line-height: 1.8; font-weight: 300; }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 4rem; }
+  .btn-primary { background: var(--accent); color: #000; padding: 0.9rem 2.2rem; font-weight: 700; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; display: inline-flex; align-items: center; gap: 0.6rem; clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%); transition: all 0.3s; }
+  .btn-primary:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 20px 60px rgba(232,255,71,0.2); }
+  .btn-secondary { background: transparent; color: var(--text); padding: 0.9rem 2.2rem; font-weight: 600; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; display: inline-flex; align-items: center; gap: 0.6rem; border: 1px solid var(--border); transition: all 0.3s; clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%); }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+  .hero-stats { display: flex; gap: 3rem; }
+  .stat { }
+  .stat-num { font-family: var(--font-display); font-size: 2.8rem; color: var(--accent); line-height: 1; }
+  .stat-label { font-size: 0.75rem; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 0.2rem; }
+  .hero-scroll { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; z-index: 1; }
+  .scroll-line { width: 1px; height: 60px; background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollLine 2s infinite; }
+  @keyframes scrollLine { 0%{opacity:0;transform:scaleY(0);transform-origin:top} 50%{opacity:1;transform:scaleY(1)} 100%{opacity:0;transform:scaleY(1);transform-origin:bottom} }
+  .scroll-text { font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); font-family: var(--font-mono); }
+
+  /* SECTION HEADER */
+  .section-header { margin-bottom: 4rem; }
+  .section-label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 1rem; }
+  .section-label::after { content: ''; flex: 1; max-width: 60px; height: 1px; background: var(--accent); opacity: 0.4; }
+  .section-title { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 4.5rem); letter-spacing: 2px; text-transform: uppercase; line-height: 0.95; }
+  .section-title span { color: var(--accent); }
+
+  /* PORTFOLIO */
+  #portfolio { background: var(--bg2); }
+  .portfolio-tabs { display: flex; gap: 0; margin-bottom: 3rem; border: 1px solid var(--border); width: fit-content; overflow: hidden; }
+  .tab-btn { padding: 0.7rem 1.5rem; font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; background: transparent; color: var(--muted); border: none; cursor: pointer; transition: all 0.25s; font-family: var(--font-body); font-weight: 600; border-right: 1px solid var(--border); }
+  .tab-btn:last-child { border-right: none; }
+  .tab-btn.active, .tab-btn:hover { background: var(--accent); color: #000; }
+  .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5px; }
+  .portfolio-item { position: relative; aspect-ratio: 16/9; background: var(--surface); overflow: hidden; cursor: pointer; }
+  .portfolio-item.featured { grid-column: span 2; }
+  .portfolio-thumb { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+  .portfolio-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,8,0.95) 0%, rgba(8,8,8,0.2) 60%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 1.8rem; transform: translateY(20px); opacity: 0; transition: all 0.4s ease; }
+  .portfolio-item:hover .portfolio-overlay { opacity: 1; transform: translateY(0); }
+  .portfolio-item:hover .portfolio-thumb { transform: scale(1.08); }
+  .portfolio-cat { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); font-family: var(--font-mono); margin-bottom: 0.4rem; }
+  .portfolio-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .portfolio-desc { font-size: 0.8rem; color: var(--muted2); }
+  .play-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); width: 64px; height: 64px; background: rgba(232,255,71,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: all 0.4s ease; }
+  .play-btn svg { fill: #000; margin-left: 4px; }
+  .portfolio-item:hover .play-btn { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .portfolio-placeholder { width: 100%; height: 100%; background: var(--bg3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; }
+  .portfolio-placeholder svg { opacity: 0.15; }
+  .portfolio-placeholder span { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); font-family: var(--font-mono); }
+
+  /* VIDEO MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal-box { width: 90%; max-width: 900px; position: relative; }
+  .modal-close { position: absolute; top: -2.5rem; right: 0; background: none; border: none; color: var(--text); cursor: pointer; font-size: 1.5rem; font-family: var(--font-mono); }
+  .modal-video { width: 100%; aspect-ratio: 16/9; background: #000; }
+
+  /* SERVICES */
+  #services { }
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5px; }
+  .service-card { background: var(--bg3); padding: 2.5rem; position: relative; overflow: hidden; transition: all 0.4s; border: 1px solid transparent; }
+  .service-card::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease; }
+  .service-card:hover { border-color: rgba(232,255,71,0.1); transform: translateY(-4px); }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-num { font-family: var(--font-display); font-size: 4rem; color: rgba(232,255,71,0.08); position: absolute; top: 1rem; right: 1.5rem; line-height: 1; }
+  .service-icon { font-size: 2rem; margin-bottom: 1.2rem; }
+  .service-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.8rem; letter-spacing: 0.5px; }
+  .service-desc { color: var(--muted2); font-size: 0.88rem; line-height: 1.8; margin-bottom: 1.2rem; }
+  .service-features { list-style: none; }
+  .service-features li { font-size: 0.78rem; color: var(--muted); padding: 0.3rem 0; display: flex; align-items: center; gap: 0.6rem; border-bottom: 1px solid var(--border); }
+  .service-features li:last-child { border: none; }
+  .service-features li::before { content: '→'; color: var(--accent); font-size: 0.7rem; }
+
+  /* ABOUT */
+  #about { background: var(--bg2); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 5rem; align-items: center; }
+  .about-visual { position: relative; }
+  .about-img-wrap { position: relative; aspect-ratio: 3/4; max-width: 380px; }
+  .about-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .about-img-placeholder { width: 100%; height: 100%; background: var(--bg3); display: flex; align-items: center; justify-content: center; aspect-ratio: 3/4; }
+  .about-img-frame { position: absolute; inset: -12px -12px 12px 12px; border: 1px solid rgba(232,255,71,0.25); z-index: -1; }
+  .about-badge { position: absolute; bottom: -1.5rem; right: -1.5rem; background: var(--accent); color: #000; padding: 1.2rem 1.5rem; font-weight: 800; font-family: var(--font-display); font-size: 1.5rem; line-height: 1; }
+  .about-badge small { display: block; font-family: var(--font-body); font-size: 0.65rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; opacity: 0.7; }
+  .about-text p { color: var(--muted2); line-height: 1.9; margin-bottom: 1.2rem; font-size: 0.95rem; }
+  .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 2rem 0; }
+  .skill-item { background: var(--bg3); padding: 1rem 1.2rem; border-left: 2px solid var(--accent); }
+  .skill-name { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+  .skill-bar { height: 2px; background: var(--border); }
+  .skill-fill { height: 100%; background: var(--accent); }
+  .workflow { margin-top: 2.5rem; }
+  .workflow-title { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); font-family: var(--font-mono); margin-bottom: 1.2rem; }
+  .workflow-steps { display: flex; gap: 0; }
+  .workflow-step { flex: 1; padding: 0.8rem; background: var(--bg3); border-right: 1px solid var(--border); text-align: center; font-size: 0.72rem; color: var(--muted2); letter-spacing: 0.5px; position: relative; }
+  .workflow-step:last-child { border: none; }
+  .workflow-step::before { content: attr(data-n); display: block; font-family: var(--font-display); font-size: 1.4rem; color: var(--accent); line-height: 1; margin-bottom: 0.2rem; }
+
+  /* TESTIMONIALS */
+  #testimonials { }
+  .testimonials-track { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5px; }
+  .testimonial-card { background: var(--bg3); padding: 2.5rem; position: relative; border: 1px solid var(--border); transition: border-color 0.3s; }
+  .testimonial-card:hover { border-color: rgba(232,255,71,0.2); }
+  .quote-mark { font-family: var(--font-display); font-size: 8rem; line-height: 0.5; color: rgba(232,255,71,0.08); position: absolute; top: 1.5rem; right: 1.5rem; }
+  .stars { color: var(--accent); font-size: 0.8rem; letter-spacing: 2px; margin-bottom: 1rem; }
+  .testimonial-text { color: var(--muted2); font-size: 0.92rem; line-height: 1.85; margin-bottom: 2rem; font-style: italic; }
+  .testimonial-author { display: flex; align-items: center; gap: 1rem; border-top: 1px solid var(--border); padding-top: 1.2rem; }
+  .author-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--surface); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 1.2rem; color: var(--accent); flex-shrink: 0; }
+  .author-name { font-weight: 700; font-size: 0.9rem; }
+  .author-role { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.5px; }
+
+  /* PRICING */
+  #pricing { background: var(--bg2); }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px; }
+  .pricing-card { background: var(--bg3); padding: 3rem 2.5rem; position: relative; border: 1px solid var(--border); transition: all 0.4s; }
+  .pricing-card.featured { background: var(--accent); color: #000; border-color: var(--accent); transform: scale(1.03); z-index: 1; }
+  .pricing-card:not(.featured):hover { transform: translateY(-6px); border-color: rgba(232,255,71,0.25); }
+  .pricing-badge { position: absolute; top: -1px; left: 50%; transform: translateX(-50%); background: var(--accent2); color: #fff; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; padding: 0.3rem 1rem; font-weight: 700; font-family: var(--font-mono); }
+  .pricing-tier { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; font-family: var(--font-mono); margin-bottom: 1.5rem; opacity: 0.7; }
+  .pricing-card.featured .pricing-tier { color: rgba(0,0,0,0.6); }
+  .pricing-price { font-family: var(--font-display); font-size: 4rem; line-height: 1; margin-bottom: 0.3rem; }
+  .pricing-card.featured .pricing-price { color: #000; }
+  .pricing-per { font-size: 0.8rem; opacity: 0.6; margin-bottom: 2rem; }
+  .pricing-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 1.5rem 0; }
+  .pricing-card.featured .pricing-divider { background: rgba(0,0,0,0.15); }
+  .pricing-features { list-style: none; margin-bottom: 2.5rem; }
+  .pricing-features li { padding: 0.55rem 0; font-size: 0.85rem; display: flex; align-items: center; gap: 0.7rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .pricing-card.featured .pricing-features li { border-color: rgba(0,0,0,0.1); color: rgba(0,0,0,0.85); }
+  .pricing-features li::before { content: '✓'; font-weight: 800; font-size: 0.7rem; flex-shrink: 0; }
+  .pricing-features li:not(:has(::before)) { opacity: 0.4; }
+  .pricing-card.featured .pricing-features li::before { color: #000; }
+  .pricing-features li:not(.included) { opacity: 0.35; }
+  .pricing-features li:not(.included)::before { content: '×'; color: var(--muted); }
+  .pricing-features li.included::before { color: var(--accent); }
+  .pricing-card.featured .pricing-features li.included::before { color: #000; }
+  .btn-price { width: 100%; padding: 1rem; font-weight: 700; font-size: 0.82rem; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; display: block; text-align: center; cursor: pointer; border: none; transition: all 0.3s; font-family: var(--font-body); clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%); }
+  .btn-price-dark { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+  .btn-price-dark:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+  .btn-price-black { background: #000; color: var(--accent); }
+  .btn-price-black:hover { background: #111; }
+
+  /* CONTACT */
+  #contact { }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 5rem; }
+  .contact-info h3 { font-family: var(--font-display); font-size: 2.5rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.5rem; line-height: 1; }
+  .contact-info p { color: var(--muted2); line-height: 1.8; margin-bottom: 2.5rem; }
+  .contact-methods { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 3rem; }
+  .contact-method { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.2rem; background: var(--bg3); border: 1px solid var(--border); text-decoration: none; color: var(--text); transition: all 0.3s; }
+  .contact-method:hover { border-color: var(--accent); background: rgba(232,255,71,0.04); }
+  .contact-method-icon { width: 36px; height: 36px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%); }
+  .contact-method-text { }
+  .contact-method-label { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); font-family: var(--font-mono); }
+  .contact-method-value { font-size: 0.9rem; font-weight: 600; }
+  .social-links { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+  .social-link { width: 44px; height: 44px; background: var(--bg3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--muted2); font-size: 1rem; transition: all 0.3s; }
+  .social-link:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-label { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); font-family: var(--font-mono); }
+  .form-input { background: var(--bg3); border: 1px solid var(--border); color: var(--text); padding: 0.9rem 1.1rem; font-size: 0.9rem; font-family: var(--font-body); transition: border-color 0.25s; outline: none; }
+  .form-input:focus { border-color: var(--accent); background: rgba(232,255,71,0.02); }
+  .form-input::placeholder { color: var(--muted); }
+  textarea.form-input { resize: vertical; min-height: 120px; }
+  select.form-input { cursor: pointer; }
+  .form-submit { background: var(--accent); color: #000; padding: 1.1rem 2.5rem; font-weight: 700; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; border: none; cursor: pointer; font-family: var(--font-body); transition: all 0.3s; width: 100%; clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%); }
+  .form-submit:hover { background: #fff; transform: translateY(-2px); }
+  .form-success { display: none; background: rgba(232,255,71,0.1); border: 1px solid rgba(232,255,71,0.3); padding: 1.2rem; color: var(--accent); font-size: 0.88rem; text-align: center; font-family: var(--font-mono); letter-spacing: 1px; }
+
+  /* WHATSAPP FLOAT */
+  .whatsapp-float { position: fixed; bottom: 2rem; right: 2rem; z-index: 999; background: #25D366; color: #fff; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 8px 30px rgba(37,211,102,0.4); transition: all 0.3s; font-size: 1.6rem; }
+  .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 12px 40px rgba(37,211,102,0.6); }
+
+  /* FOOTER */
+  footer { background: var(--bg); border-top: 1px solid var(--border); padding: 3rem 5%; display: flex; align-items: center; justify-content: space-between; flex-wrap: gap; gap: 1.5rem; }
+  .footer-logo { font-family: var(--font-display); font-size: 1.8rem; letter-spacing: 3px; color: var(--text); text-decoration: none; }
+  .footer-logo span { color: var(--accent); }
+  .footer-text { font-size: 0.8rem; color: var(--muted); font-family: var(--font-mono); }
+  .footer-text a { color: var(--accent); text-decoration: none; }
+
+  /* ANIMATIONS */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal-left.visible { opacity: 1; transform: translateX(0); }
+  .reveal-right { opacity: 0; transform: translateX(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+  /* MARQUEE */
+  .marquee-wrap { overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 1.2rem 0; background: var(--bg2); }
+  .marquee { display: flex; gap: 3rem; animation: marquee 20s linear infinite; white-space: nowrap; }
+  .marquee-item { font-family: var(--font-display); font-size: 1.1rem; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 3rem; }
+  .marquee-item span { color: var(--accent); font-size: 0.6rem; }
+  @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    .nav-links, .nav-cta { display: none; }
+    .hamburger { display: flex; }
+    .mobile-menu { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 999; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-family: var(--font-display); font-size: 2.5rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text); text-decoration: none; }
+    .mobile-menu a:hover { color: var(--accent); }
+    .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .pricing-card.featured { transform: none; }
+    .form-row { grid-template-columns: 1fr; }
+    .portfolio-item.featured { grid-column: span 1; }
+    .hero-stats { gap: 2rem; }
+    section { padding: 5rem 5%; }
+    .portfolio-tabs { overflow-x: auto; width: 100%; }
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+  }
+  @media (max-width: 600px) {
+    .portfolio-grid { grid-template-columns: 1fr; }
+    .services-grid { grid-template-columns: 1fr; }
+    .hero-title { font-size: 3rem; }
+    footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#home" onclick="closeMobile()">Home</a>
+  <a href="#portfolio" onclick="closeMobile()">Portfolio</a>
+  <a href="#services" onclick="closeMobile()">Services</a>
+  <a href="#about" onclick="closeMobile()">About</a>
+  <a href="#pricing" onclick="closeMobile()">Pricing</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#home" class="nav-logo">Cut<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Hire Me</a>
+  <div class="hamburger" id="hamburger" onclick="toggleMobile()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-noise"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Available for Projects</div>
+    <h1 class="hero-title">
+      Professional<br>
+      <em>Video</em>
+      <span class="outline">Editing</span>
+    </h1>
+    <p class="hero-sub">That brings your story to life. From cinematic YouTube videos to viral reels — I craft visuals that captivate, convert, and connect.</p>
+    <div class="hero-actions">
+      <a href="#portfolio" class="btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+        View My Work
+      </a>
+      <a href="#contact" class="btn-secondary">
+        Hire Me →
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">150+</div>
+        <div class="stat-label">Projects Done</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">80+</div>
+        <div class="stat-label">Happy Clients</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">5yr</div>
+        <div class="stat-label">Experience</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span class="scroll-text">Scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee">
+    <div class="marquee-item">YouTube Editing <span>✦</span> Reels & Shorts <span>✦</span> Color Grading <span>✦</span> Brand Videos <span>✦</span> Motion Graphics <span>✦</span> Sound Design <span>✦</span> Commercial Ads <span>✦</span> Documentary <span>✦</span></div>
+    <div class="marquee-item">YouTube Editing <span>✦</span> Reels & Shorts <span>✦</span> Color Grading <span>✦</span> Brand Videos <span>✦</span> Motion Graphics <span>✦</span> Sound Design <span>✦</span> Commercial Ads <span>✦</span> Documentary <span>✦</span></div>
+  </div>
+</div>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="section-header reveal">
+    <div class="section-label">02 — Portfolio</div>
+    <h2 class="section-title">Featured <span>Work</span></h2>
+  </div>
+  <div class="portfolio-tabs reveal">
+    <button class="tab-btn active" onclick="filterPortfolio('all', this)">All</button>
+    <button class="tab-btn" onclick="filterPortfolio('youtube', this)">YouTube</button>
+    <button class="tab-btn" onclick="filterPortfolio('social', this)">Social Media</button>
+    <button class="tab-btn" onclick="filterPortfolio('reels', this)">Reels / Shorts</button>
+    <button class="tab-btn" onclick="filterPortfolio('promo', this)">Promotional</button>
+  </div>
+  <div class="portfolio-grid" id="portfolioGrid">
+
+    <div class="portfolio-item featured" data-cat="youtube" onclick="openModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+      <div class="portfolio-placeholder">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="white"><path d="M23 7s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.1 2.8 12 2.8 12 2.8s-4.1 0-6.8.2c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.2v2c0 2.1.3 4.2.3 4.2s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.3 21.6 12 21.6 12 21.6s4.1 0 6.8-.2c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.3-2.1.3-4.2v-2C23.3 9.1 23 7 23 7z"/><polygon points="9.7,15.5 9.7,8.5 16.3,12" fill="#080808"/></svg>
+        <span>YouTube Edit — Tech Review</span>
+      </div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-cat">YouTube Edit</div>
+        <div class="portfolio-name">Cinematic Tech Review — iPhone 16 Pro</div>
+        <div class="portfolio-desc">Full production edit with motion graphics & color grade</div>
+      </div>
+      <div class="play-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+      </div>
+    </div>
+
+    <div class="portfolio-item" data-cat="reels" onclick="openModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+      <div class="portfolio-placeholder">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" fill="#080808"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="#080808" stroke-width="2"/></svg>
+        <span>Instagram Reel</span>
+      </div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-cat">Reels / Shorts</div>
+        <div class="portfolio-name">Fashion Brand Reel</div>
+        <div class="portfolio-desc">30-second viral reel with trendy transitions</div>
+      </div>
+      <div class="play-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+      </div>
+    </div>
+
+    <div class="portfolio-item" data-cat="promo" onclick="openModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+      <div class="portfolio-placeholder">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.72 12 19.79 19.79 0 0 1 1.61 3.56 2 2 0 0 1 3.59 1.38h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.02z"/></svg>
+        <span>Product Commercial</span>
+      </div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-cat">Promotional</div>
+        <div class="portfolio-name">Product Commercial — SkinCare Brand</div>
+        <div class="portfolio-desc">60s commercial with cinematic color grading</div>
+      </div>
+      <div class="play-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+      </div>
+    </div>
+
+    <div class="portfolio-item" data-cat="social" onclick="openModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+      <div class="portfolio-placeholder">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M21 2H3a1 1 0 0 0-1 1v18a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"/></svg>
+        <span>Social Media Content</span>
+      </div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-cat">Social Media</div>
+        <div class="portfolio-name">TikTok Viral Series — Travel Vlog</div>
+        <div class="portfolio-desc">Hook-driven edits with perfect sound sync</div>
+      </div>
+      <div class="play-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+      </div>
+    </div>
+
+    <div class="portfolio-item" data-cat="youtube" onclick="openModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+      <div class="portfolio-placeholder">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16" fill="#080808"/></svg>
+        <span>YouTube Vlog</span>
+      </div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-cat">YouTube Edit</div>
+        <div class="portfolio-name">Lifestyle Vlog — Japan Travel Series</div>
+        <div class="portfolio-desc">Cinematic documentary-style cut with music sync</div>
+      </div>
+      <div class="play-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+      </div>
+    </div>
+
+    <div class="portfolio-item" data-cat="reels" onclick="openModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+      <div class="portfolio-placeholder">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        <span>YouTube Short</span>
+      </div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-cat">Shorts / Reels</div>
+        <div class="portfolio-name">Fitness Motivation Short</div>
+        <div class="portfolio-desc">High-energy short with beat drops & transitions</div>
+      </div>
+      <div class="play-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-header reveal">
+    <div class="section-label">03 — Services</div>
+    <h2 class="section-title">What I <span>Offer</span></h2>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="service-num">01</div>
+      <div class="service-icon">🎬</div>
+      <div class="service-title">YouTube Video Editing</div>
+      <div class="service-desc">Full-length YouTube productions crafted for maximum retention and watch time. From talking heads to documentary-style storytelling.</div>
+      <ul class="service-features">
+        <li>Long-form edit (5–60 min)</li>
+        <li>Custom intro & outro</li>
+        <li>Motion graphics & text</li>
+        <li>Thumbnail creation</li>
+        <li>Sound mixing</li>
+      </ul>
+    </div>
+    <div class="service-card reveal" style="transition-delay:0.1s">
+      <div class="service-num">02</div>
+      <div class="service-icon">📱</div>
+      <div class="service-title">Short Form Content</div>
+      <div class="service-desc">Scroll-stopping TikToks, Instagram Reels, and YouTube Shorts designed to go viral with the right hooks and pacing.</div>
+      <ul class="service-features">
+        <li>TikTok / Reels / Shorts</li>
+        <li>Trending transitions</li>
+        <li>Music synchronization</li>
+        <li>Caption & subtitle overlays</li>
+        <li>Hook optimization</li>
+      </ul>
+    </div>
+    <div class="service-card reveal" style="transition-delay:0.2s">
+      <div class="service-num">03</div>
+      <div class="service-icon">🏆</div>
+      <div class="service-title">Promotional & Commercial</div>
+      <div class="service-desc">Brand stories, product launches, and commercial ads that convert viewers into customers. Cinematic quality for corporate and creator brands.</div>
+      <ul class="service-features">
+        <li>Brand commercials</li>
+        <li>Product showcase videos</li>
+        <li>Event highlight films</li>
+        <li>Corporate promos</li>
+        <li>Ad campaign cuts</li>
+      </ul>
+    </div>
+    <div class="service-card reveal" style="transition-delay:0.3s">
+      <div class="service-num">04</div>
+      <div class="service-icon">🎨</div>
+      <div class="service-title">Color Grading & Sound Design</div>
+      <div class="service-desc">Professional color correction and cinematic LUT application. Full audio post-production including music, SFX, and voice clarity enhancement.</div>
+      <ul class="service-features">
+        <li>Cinematic color grading</li>
+        <li>Custom LUT creation</li>
+        <li>Audio noise removal</li>
+        <li>Music licensing & mixing</li>
+        <li>SFX integration</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-visual reveal-left">
+      <div class="about-img-wrap">
+        <div class="about-img-placeholder" style="background: linear-gradient(135deg, #1a1a1a 0%, #0e0e0e 100%); display:flex; align-items:center; justify-content:center;">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="rgba(232,255,71,0.15)"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        </div>
+        <div class="about-img-frame"></div>
+        <div class="about-badge">
+          5+
+          <small>Years Exp.</small>
+        </div>
+      </div>
+    </div>
+    <div class="about-text reveal-right">
+      <div class="section-label">04 — About Me</div>
+      <h2 class="section-title" style="margin-bottom:1.8rem">The Editor <span>Behind</span> The Cut</h2>
+      <p>I'm a freelance video editor with over 5 years of experience crafting stories for some of the world's most exciting content creators, brands, and influencers. My background spans YouTube production, social media content strategy, and commercial film post-production.</p>
+      <p>I believe every frame matters. I obsess over pacing, sound, and visual flow to create edits that don't just look good — they <em style="color:var(--accent); font-style:normal">feel</em> right. Whether you're scaling a channel or launching a brand, I bring cinematic energy to every project.</p>
+      <div class="skills-grid">
+        <div class="skill-item">
+          <div class="skill-name">Premiere Pro</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:95%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name">After Effects</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:88%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name">DaVinci Resolve</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:92%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name">Color Grading</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name">Sound Design</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name">Motion Graphics</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div>
+        </div>
+      </div>
+      <div class="workflow">
+        <div class="workflow-title">// My Creative Workflow</div>
+        <div class="workflow-steps">
+          <div class="workflow-step" data-n="01">Brief & Assets</div>
+          <div class="workflow-step" data-n="02">Rough Cut</div>
+          <div class="workflow-step" data-n="03">Revisions</div>
+          <div class="workflow-step" data-n="04">Final Grade</div>
+          <div class="workflow-step" data-n="05">Delivery</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-header reveal">
+    <div class="section-label">05 — Testimonials</div>
+    <h2 class="section-title">Client <span>Love</span></h2>
+  </div>
+  <div class="testimonials-track">
+    <div class="testimonial-card reveal">
+      <div class="quote-mark">"</div>
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">CutLab completely transformed my YouTube channel. My watch time doubled within two months and my subscribers skyrocketed. The quality and attention to detail is unreal — this is who you hire when you're serious about content.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">MK</div>
+        <div>
+          <div class="author-name">Marcus K.</div>
+          <div class="author-role">Tech YouTuber — 280K Subscribers</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal" style="transition-delay:0.1s">
+      <div class="quote-mark">"</div>
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">Our brand commercial blew every client away. We got three new partnerships off the back of one video. CutLab understood our vision better than we did and delivered something truly cinematic. 10/10 would recommend.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">SE</div>
+        <div>
+          <div class="author-name">Sofia E.</div>
+          <div class="author-role">Brand Director — Lumière Cosmetics</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal" style="transition-delay:0.2s">
+      <div class="quote-mark">"</div>
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">My reels went from 500 views to 200K after CutLab took over the editing. The pacing, the music choices, the transitions — everything just hits differently. Fast turnaround too. Absolute game changer for my content strategy.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">JL</div>
+        <div>
+          <div class="author-name">Jaylen L.</div>
+          <div class="author-role">Fitness Influencer — 140K on Instagram</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-header reveal">
+    <div class="section-label">06 — Pricing</div>
+    <h2 class="section-title">Simple <span>Pricing</span></h2>
+  </div>
+  <div class="pricing-grid">
+    <div class="pricing-card reveal">
+      <div class="pricing-tier">Basic Package</div>
+      <div class="pricing-price">$149</div>
+      <div class="pricing-per">per video</div>
+      <div class="pricing-divider"></div>
+      <ul class="pricing-features">
+        <li class="included">Up to 10 min video</li>
+        <li class="included">Basic color correction</li>
+        <li class="included">Background music</li>
+        <li class="included">Subtitles/captions</li>
+        <li class="included">1 revision round</li>
+        <li class="included">5-day delivery</li>
+        <li>Motion graphics</li>
+        <li>Custom intro/outro</li>
+        <li>Rush delivery</li>
+      </ul>
+      <a href="#contact" class="btn-price btn-price-dark">Get Started</a>
+    </div>
+
+    <div class="pricing-card featured reveal" style="transition-delay:0.1s">
+      <div class="pricing-badge">Most Popular</div>
+      <div class="pricing-tier">Standard Package</div>
+      <div class="pricing-price">$349</div>
+      <div class="pricing-per">per video</div>
+      <div class="pricing-divider"></div>
+      <ul class="pricing-features">
+        <li class="included">Up to 25 min video</li>
+        <li class="included">Full color grading</li>
+        <li class="included">Music + SFX design</li>
+        <li class="included">Subtitles/captions</li>
+        <li class="included">3 revision rounds</li>
+        <li class="included">3-day delivery</li>
+        <li class="included">Custom intro & outro</li>
+        <li class="included">Basic motion graphics</li>
+        <li>Rush delivery</li>
+      </ul>
+      <a href="#contact" class="btn-price btn-price-black">Get Started</a>
+    </div>
+
+    <div class="pricing-card reveal" style="transition-delay:0.2s">
+      <div class="pricing-tier">Premium Package</div>
+      <div class="pricing-price">$649</div>
+      <div class="pricing-per">per video</div>
+      <div class="pricing-divider"></div>
+      <ul class="pricing-features">
+        <li class="included">Unlimited length</li>
+        <li class="included">Cinematic color grading</li>
+        <li class="included">Full sound design</li>
+        <li class="included">Subtitles/captions</li>
+        <li class="included">Unlimited revisions</li>
+        <li class="included">48h delivery</li>
+        <li class="included">Full motion graphics</li>
+        <li class="included">Thumbnail design</li>
+        <li class="included">Rush delivery included</li>
+      </ul>
+      <a href="#contact" class="btn-price btn-price-dark">Get Started</a>
+    </div>
+  </div>
+  <p style="text-align:center; color:var(--muted); margin-top:2rem; font-size:0.82rem; font-family:var(--font-mono);">* Custom packages available for monthly retainers and agencies. <a href="#contact" style="color:var(--accent); text-decoration:none;">Contact me →</a></p>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-grid">
+    <div class="contact-info reveal-left">
+      <div class="section-label">07 — Contact</div>
+      <h3>Let's Create<br><span style="color:var(--accent)">Something</span><br>Great</h3>
+      <p>Have a project in mind? I'd love to hear about it. Send me a message and I'll get back to you within 24 hours.</p>
+      <div class="contact-methods">
+        <a href="mailto:hello@cutlab.studio" class="contact-method">
+          <div class="contact-method-icon">✉</div>
+          <div class="contact-method-text">
+            <div class="contact-method-label">Email</div>
+            <div class="contact-method-value">hello@cutlab.studio</div>
+          </div>
+        </a>
+        <a href="https://wa.me/1234567890" target="_blank" class="contact-method">
+          <div class="contact-method-icon" style="background:#25D366">📱</div>
+          <div class="contact-method-text">
+            <div class="contact-method-label">WhatsApp</div>
+            <div class="contact-method-value">+1 (234) 567-8900</div>
+          </div>
+        </a>
+        <a href="#" class="contact-method">
+          <div class="contact-method-icon">📅</div>
+          <div class="contact-method-text">
+            <div class="contact-method-label">Response Time</div>
+            <div class="contact-method-value">Within 24 hours</div>
+          </div>
+        </a>
+      </div>
+      <div class="social-links">
+        <a href="#" class="social-link" title="YouTube">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23 7s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.1 2.8 12 2.8 12 2.8s-4.1 0-6.8.2c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.2v2c0 2.1.3 4.2.3 4.2s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.3 21.6 12 21.6 12 21.6s4.1 0 6.8-.2c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.3-2.1.3-4.2v-2C23.3 9.1 23 7 23 7z"/></svg>
+        </a>
+        <a href="#" class="social-link" title="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" fill="var(--bg3)"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="var(--bg3)" stroke-width="2"/></svg>
+        </a>
+        <a href="#" class="social-link" title="TikTok">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.74a4.85 4.85 0 01-1.01-.05z"/></svg>
+        </a>
+        <a href="#" class="social-link" title="LinkedIn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+        </a>
+        <a href="#" class="social-link" title="Twitter / X">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="contact-form reveal-right">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-input" placeholder="John" id="fname">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-input" placeholder="Doe" id="lname">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" placeholder="john@email.com" id="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Project Type</label>
+        <select class="form-input" id="project">
+          <option value="">Select a service...</option>
+          <option>YouTube Video Editing</option>
+          <option>Short Form Content (TikTok / Reels)</option>
+          <option>Promotional / Commercial Video</option>
+          <option>Color Grading & Sound Design</option>
+          <option>Custom Package</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Budget Range</label>
+        <select class="form-input" id="budget">
+          <option value="">Select budget...</option>
+          <option>Under $200</option>
+          <option>$200 – $500</option>
+          <option>$500 – $1,000</option>
+          <option>$1,000+</option>
+          <option>Monthly Retainer</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tell Me About Your Project</label>
+        <textarea class="form-input" placeholder="Describe your project, goals, and timeline..." id="message"></textarea>
+      </div>
+      <button class="form-submit" onclick="submitForm()">Send Message →</button>
+      <div class="form-success" id="formSuccess">
+        ✓ Message sent! I'll get back to you within 24 hours.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#home" class="footer-logo">Cut<span>Lab</span></a>
+  <p class="footer-text">© 2025 CutLab. All rights reserved. Made with <span style="color:var(--accent)">♥</span> for creators.</p>
+  <p class="footer-text" style="font-size:0.7rem;">Crafted for <a href="#">YouTubers</a> · <a href="#">Brands</a> · <a href="#">Creators</a></p>
+</footer>
+
+<!-- WhatsApp Float -->
+<a href="https://wa.me/1234567890" class="whatsapp-float" target="_blank" title="Chat on WhatsApp">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- VIDEO MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕ CLOSE</button>
+    <iframe class="modal-video" id="modalVideo" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
+</div>
+
+<script>
+  // Custom Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    setTimeout(() => {
+      ring.style.left = e.clientX + 'px';
+      ring.style.top = e.clientY + 'px';
+    }, 60);
+  });
+  document.querySelectorAll('a, button, .portfolio-item, .service-card, .pricing-card').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
+  });
+
+  // Nav scroll effect
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // Portfolio filter
+  function filterPortfolio(cat, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.portfolio-item').forEach(item => {
+      if (cat === 'all' || item.dataset.cat === cat) {
+        item.style.display = '';
+        item.style.opacity = '0';
+        setTimeout(() => item.style.opacity = '1', 50);
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  }
+
+  // Modal
+  function openModal(url) {
+    document.getElementById('modalVideo').src = url + '?autoplay=1';
+    document.getElementById('modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(e) {
+    if (!e || e.target === document.getElementById('modal') || e.target.className === 'modal-close') {
+      document.getElementById('modal').classList.remove('open');
+      document.getElementById('modalVideo').src = '';
+      document.body.style.overflow = '';
+    }
+  }
+
+  // Mobile menu
+  function toggleMobile() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+  function closeMobile() {
+    document.getElementById('mobileMenu').classList.remove('open');
+  }
+
+  // Contact form
+  function submitForm() {
+    const fname = document.getElementById('fname').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+    if (!fname || !email || !message) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+    const btn = document.querySelector('.form-submit');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.style.display = 'none';
+      document.getElementById('formSuccess').style.display = 'block';
+    }, 1500);
+  }
+
+  // Hero title animation
+  document.querySelector('.hero-content').style.opacity = '0';
+  document.querySelector('.hero-content').style.transform = 'translateY(30px)';
+  setTimeout(() => {
+    document.querySelector('.hero-content').style.transition = 'opacity 1s ease, transform 1s ease';
+    document.querySelector('.hero-content').style.opacity = '1';
+    document.querySelector('.hero-content').style.transform = 'translateY(0)';
+  }, 200);
+
+  // Smooth scroll for all anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+</body>
+</html>
